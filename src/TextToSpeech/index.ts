@@ -1,17 +1,20 @@
 import {GetObjectCommand, PutObjectCommand, S3Client} from '@aws-sdk/client-s3';
+import {getSignedUrl} from '@aws-sdk/s3-request-presigner';
 import md5 from 'md5';
 import {
 	SpeechConfig,
 	SpeechSynthesisResult,
 	SpeechSynthesizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
-
+import {getInputProps} from 'remotion';
 const voices = {
 	ptBRWoman: 'pt-BR-FranciscaNeural',
 	ptBRMan: 'pt-BR-AntonioNeural',
 	enUSWoman1: 'en-US-JennyNeural',
 	enUSWoman2: 'en-US-AriaNeural',
 } as const;
+
+const inputProps = getInputProps();
 
 export const textToSpeech = async (
 	text: string,
@@ -26,7 +29,7 @@ export const textToSpeech = async (
 		throw new Error('Voice not found');
 	}
 
-	const fileName = `${md5(text)}.mp3`;
+	const fileName = `${md5(inputProps.title)}.mp3`;
 
 	const fileExists = await checkIfAudioHasAlreadyBeenSynthesized(fileName);
 
@@ -106,8 +109,17 @@ const uploadTtsToS3 = async (audioData: ArrayBuffer, fileName: string) => {
 	);
 };
 
-const createS3Url = (filename: string) => {
+const createS3Url = async (filename: string) => {
 	const bucketName = process.env.AWS_S3_BUCKET_NAME;
-
-	return `https://${bucketName}.s3.amazonaws.com/${filename}`;
+	const awsRegion = process.env.AWS_S3_REGION;
+	const client = new S3Client({
+		region: awsRegion,
+		credentials: {
+			accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
+			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+		},
+	});
+	const command = new GetObjectCommand({Bucket: bucketName, Key: filename});
+	const url = await getSignedUrl(client, command, {expiresIn: 3600});
+	return url;
 };

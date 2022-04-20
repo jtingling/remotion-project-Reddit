@@ -17,12 +17,11 @@ export const HelloWorld: React.FC<{
 			extrapolateRight: 'clamp',
 		}
 	);
-	const transitionStart = 25;
 
 	return (
 		<div style={{flex: 1, backgroundColor: 'white'}}>
 			<div style={{opacity}}>
-				<Sequence from={transitionStart + 10}>
+				<Sequence from={0}>
 					<Title titleText={titleText} titleColor={titleColor} />
 				</Sequence>
 			</div>
