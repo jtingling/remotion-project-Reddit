@@ -1,12 +1,11 @@
 import {useCallback, useEffect, useState} from 'react';
-
 import {Audio, continueRender, delayRender} from 'remotion';
 import {textToSpeech} from '../TextToSpeech/index';
 
-export const Title: React.FC<{
+export const AudioTrack: React.FC<{
 	titleText: string;
 	titleColor: string;
-}> = ({titleText, titleColor}) => {
+}> = ({titleText}) => {
 	const [handle] = useState(() => delayRender());
 	const [audioUrl, setAudioUrl] = useState('');
 

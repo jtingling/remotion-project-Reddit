@@ -4,8 +4,8 @@
 	"description": "My Remotion video",
 	"type": "module",
 	"scripts": {
-		"start": "remotion preview src/index.tsx",
-		"build": "remotion render src/index.tsx HelloWorld out/video.mp4",
+		"start": "remotion preview src/index.tsx --props=../scripts/posts/88ada218f6c03078a92750388f0a9148.json",
+		"build": "remotion render src/index.tsx Main out/video.mp4 --props=../scripts/posts/0632e6b0a905d8a2073f516e1a84884b.json",
 		"upgrade": "remotion upgrade",
 		"server": "ts-node server.tsx",
 		"test": "eslint src --ext ts,tsx,js,jsx && tsc"

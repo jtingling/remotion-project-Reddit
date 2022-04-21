@@ -1,5 +1,5 @@
 import {useState, useEffect, useCallback} from 'react';
-import {getAudioDuration} from '@remotion/media-utils';
+import {getAudioDuration, getVideoMetadata} from '@remotion/media-utils';
 import {
 	Composition,
 	continueRender,
@@ -7,29 +7,33 @@ import {
 	getInputProps,
 } from 'remotion';
 import {textToSpeech} from './TextToSpeech';
-import {HelloWorld} from './HelloWorld';
+import {Main} from './Main';
+import sampleVideo from '../raw-videos/production ID_4010184.mp4';
 
 const inputProps = getInputProps();
 
 export const RemotionVideo: React.FC = () => {
 	const [handle] = useState(() => delayRender());
-	const [duration, setDuration] = useState<number>(300);
+	const [frameDuration, setFrameDuration] = useState<number>(300);
+	const [videoFrames, setVideoFrames] = useState<number>(300);
 
 	const getDuration = useCallback(async () => {
-		console.log(inputProps);
 		const url = await textToSpeech(
 			inputProps.title + ' ' + inputProps.titleText,
 			'enUSWoman2'
 		);
 		const imported = await getAudioDuration(url);
+		const {durationInSeconds} = await getVideoMetadata(sampleVideo);
 		const duration = Math.round(imported) * 30;
-		setDuration(duration);
+		const videoDuration = Math.round(durationInSeconds) * 30;
+		setFrameDuration(duration);
+		setVideoFrames(videoDuration);
 		continueRender(handle);
 	}, [handle]);
 
 	useEffect(() => {
 		getDuration();
-	}, [getDuration, handle]);
+	}, [getDuration]);
 
 	if (!process.env.AZURE_TTS_KEY) {
 		throw new Error(
@@ -64,15 +68,16 @@ export const RemotionVideo: React.FC = () => {
 	return (
 		<>
 			<Composition
-				id="HelloWorld"
-				component={HelloWorld}
-				durationInFrames={duration}
+				id="Main"
+				component={Main}
+				durationInFrames={frameDuration}
 				fps={30}
 				width={1920}
 				height={1080}
 				defaultProps={{
 					titleText: '',
 					titleColor: 'black',
+					videoFrames,
 				}}
 			/>
 		</>
