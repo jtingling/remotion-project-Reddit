@@ -8,10 +8,7 @@ import {
 	Easing,
 } from 'remotion';
 
-export const Intro: React.FC<{title: string}> = ({title}) => {
-	const [wordArray, setWordArray] = useState<string[]>([]);
-	const frame = useCurrentFrame();
-
+export const Intro: React.FC<{title: string | undefined}> = ({title}) => {
 	return (
 		<Container sx={{zIndex: 10, whiteSpace: 'pre-line'}}>
 			<Paper>

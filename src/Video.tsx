@@ -1,39 +1,49 @@
 import {useState, useEffect, useCallback} from 'react';
-import {getAudioDuration, getVideoMetadata} from '@remotion/media-utils';
+import {getVideoMetadata} from '@remotion/media-utils';
 import {
 	Composition,
 	continueRender,
 	delayRender,
 	getInputProps,
 } from 'remotion';
-import {textToSpeech} from './TextToSpeech';
 import {Main} from './Main';
+import {
+	createIntro,
+	createBody,
+	calculateDuration,
+	calculateSegmentDuration,
+} from './utilities';
+import {ContentSegments} from './types';
 import sampleVideo from '../raw-videos/production ID_4010184.mp4';
 
 const inputProps = getInputProps();
-
+const defaultContentValue = {
+	intro: undefined,
+	body: undefined,
+};
 export const RemotionVideo: React.FC = () => {
 	const [handle] = useState(() => delayRender());
-	const [frameDuration, setFrameDuration] = useState<number>(300);
-	const [videoFrames, setVideoFrames] = useState<number>(300);
+	const [videoFrames, setVideoFrames] = useState<number>(1);
+	const [totalFrames, setTotalFrames] = useState<number>(1);
+	const [content, setContent] =
+		useState<ContentSegments>(defaultContentValue);
 
-	const getDuration = useCallback(async () => {
-		const url = await textToSpeech(
-			inputProps.title + ' ' + inputProps.titleText,
-			'enUSWoman2'
-		);
-		const imported = await getAudioDuration(url);
-		const {durationInSeconds} = await getVideoMetadata(sampleVideo);
-		const duration = Math.round(imported) * 30;
-		const videoDuration = Math.round(durationInSeconds) * 30;
-		setFrameDuration(duration);
-		setVideoFrames(videoDuration);
+	const initVideoData = useCallback(async () => {
+		const data = {intro: {}, body: [{}]};
+		data.intro = await createIntro(inputProps.title);
+		data.body = await createBody(inputProps.titleText);
+		const duration = await getVideoMetadata(sampleVideo);
+		const videoFrames = Math.round(duration.durationInSeconds) * 30;
+		setVideoFrames(videoFrames);
+		setTotalFrames(calculateDuration(data as ContentSegments));
+		setContent(calculateSegmentDuration(data as ContentSegments));
+
 		continueRender(handle);
 	}, [handle]);
 
 	useEffect(() => {
-		getDuration();
-	}, [getDuration]);
+		initVideoData();
+	}, [initVideoData]);
 
 	if (!process.env.AZURE_TTS_KEY) {
 		throw new Error(
@@ -70,14 +80,15 @@ export const RemotionVideo: React.FC = () => {
 			<Composition
 				id="Main"
 				component={Main}
-				durationInFrames={frameDuration}
+				durationInFrames={totalFrames}
 				fps={30}
 				width={1920}
 				height={1080}
 				defaultProps={{
 					titleText: '',
-					titleColor: 'black',
+					title: '',
 					videoFrames,
+					content,
 				}}
 			/>
 		</>

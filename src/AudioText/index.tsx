@@ -1,40 +1,24 @@
+import {useEffect, useCallback, useState, useMemo} from 'react';
+import {useDebounce, useDebouncedCallback} from 'use-debounce';
 import {
 	interpolate,
 	useCurrentFrame,
 	useVideoConfig,
 	getInputProps,
 } from 'remotion';
+import {useAudioData, visualizeAudio, AudioData} from '@remotion/media-utils';
 import {Container, Paper, Typography} from '@mui/material';
-import {useEffect, useCallback, useState} from 'react';
+import {wordPacing} from './helpers';
+import {Comments} from './Comments';
 
 const title = getInputProps();
 
 export const AudioText: React.FC<{
 	titleText: string;
 }> = ({titleText}) => {
-	const [wordArray, setWordArray] = useState<string[]>([]);
-	const frame = useCurrentFrame();
-
-	const populatePassage = useCallback(() => {
-		const tempArray = wordArray;
-		tempArray.push(titleText);
-		tempArray.push(' ');
-		if (tempArray.length < 150) {
-			setWordArray(tempArray);
-		} else {
-			setWordArray([]);
-		}
-	}, [titleText, wordArray]);
-
-	useEffect(() => {
-		populatePassage();
-	}, [populatePassage]);
-
 	return (
-		<Container sx={{zIndex: 10, whiteSpace: 'pre-line'}}>
-			<Paper>
-				<Typography variant="h6">{wordArray}</Typography>
-			</Paper>
-		</Container>
+		<>
+			<Comments titleText={word} />
+		</>
 	);
 };
