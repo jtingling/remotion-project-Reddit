@@ -1,12 +1,12 @@
 import {Container, Paper, Typography} from '@mui/material';
 
 export const Comments: React.FC<{
-	titleText: string;
-}> = ({titleText}) => {
+	selftext: string;
+}> = ({selftext}) => {
 	return (
 		<Container sx={{zIndex: 10, whiteSpace: 'pre-line'}}>
 			<Paper>
-				<Typography variant="h6">{titleText}</Typography>
+				<Typography variant="h6">{selftext}</Typography>
 			</Paper>
 		</Container>
 	);

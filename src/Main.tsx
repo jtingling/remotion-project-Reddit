@@ -5,28 +5,26 @@ import {VideoTrack} from './Video/';
 import {Comments} from './AudioText/Comments';
 
 export const Main: React.FC<{
-	titleText: string;
-	title: string;
 	videoFrames: number;
 	content: ContentSegments;
 }> = ({videoFrames, content}) => {
-	console.log(content);
 	return (
 		<div style={{flex: 1, backgroundColor: 'white'}}>
 			<div>
 				<Sequence from={0} durationInFrames={content.intro?.duration}>
 					<AudioTrack audio={content.intro?.url as string} />
-					<Comments titleText={content.intro?.text as string} />
+					<Comments selftext={content.intro?.text as string} />
 				</Sequence>
 				{content.body &&
 					content.body.map((c) => {
 						return (
 							<Sequence
+								key={(c.from as number) + c.duration}
 								from={(c.from as number) - 2}
 								durationInFrames={(c.duration as number) + 1}
 							>
 								<AudioTrack audio={c.url} />
-								<Comments titleText={c.text as string} />
+								<Comments selftext={c.text as string} />
 							</Sequence>
 						);
 					})}

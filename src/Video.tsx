@@ -30,8 +30,8 @@ export const RemotionVideo: React.FC = () => {
 
 	const initVideoData = useCallback(async () => {
 		const data = {intro: {}, body: [{}]};
-		data.intro = await createIntro(inputProps.title);
-		data.body = await createBody(inputProps.titleText);
+		data.intro = await createIntro(inputProps.post.title);
+		data.body = await createBody(inputProps.post.selftext);
 		const duration = await getVideoMetadata(sampleVideo);
 		const videoFrames = Math.round(duration.durationInSeconds) * 30;
 		setVideoFrames(videoFrames);
@@ -85,8 +85,6 @@ export const RemotionVideo: React.FC = () => {
 				width={1920}
 				height={1080}
 				defaultProps={{
-					titleText: '',
-					title: '',
 					videoFrames,
 					content,
 				}}
