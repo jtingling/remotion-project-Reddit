@@ -6,13 +6,13 @@ export const createSegment = async (
 	segment: string,
 	fps = 30
 ): Promise<ContentSlice> => {
-	const audioUrl = await textToSpeech(segment, 'enUSWoman1');
-	console.log(audioUrl);
+	const cleanedText = scrubText(segment);
+	const audioUrl = await textToSpeech(cleanedText, 'enUSWoman1');
 	const audioDuration = Math.round((await getAudioDuration(audioUrl)) * fps);
 
 	return {
 		url: audioUrl,
-		text: segment,
+		text: cleanedText,
 		duration: audioDuration,
 	};
 };
@@ -51,4 +51,8 @@ export const calculateSegmentDuration = (
 		});
 	}
 	return content;
+};
+
+export const scrubText = (text: string): string => {
+	return text.replaceAll('\n', '').trim();
 };
