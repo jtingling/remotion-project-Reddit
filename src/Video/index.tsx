@@ -1,12 +1,13 @@
-import {Video, Loop} from 'remotion';
-import sampleVideo from '../../raw-videos/production ID_4010184.mp4';
+import {Video, Loop, getInputProps} from 'remotion';
+
+const inputProps = getInputProps();
 
 export const VideoTrack: React.FC<{
 	videoFrames: number;
 }> = ({videoFrames}) => {
 	return (
 		<Loop durationInFrames={videoFrames}>
-			<Video muted src={sampleVideo} />
+			<Video muted src={`${inputProps.video}`} />
 		</Loop>
 	);
 };

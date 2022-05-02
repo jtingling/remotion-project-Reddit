@@ -14,7 +14,6 @@ import {
 	calculateSegmentDuration,
 } from './utilities';
 import {ContentSegments} from './types';
-import sampleVideo from '../raw-videos/production ID_4010184.mp4';
 
 const inputProps = getInputProps();
 const defaultContentValue = {
@@ -32,12 +31,11 @@ export const RemotionVideo: React.FC = () => {
 		const data = {intro: {}, body: [{}]};
 		data.intro = await createIntro(inputProps.post.title);
 		data.body = await createBody(inputProps.post.selftext);
-		const duration = await getVideoMetadata(sampleVideo);
+		const duration = await getVideoMetadata(inputProps.video);
 		const videoFrames = Math.round(duration.durationInSeconds) * 30;
 		setVideoFrames(videoFrames);
 		setTotalFrames(calculateDuration(data as ContentSegments));
 		setContent(calculateSegmentDuration(data as ContentSegments));
-
 		continueRender(handle);
 	}, [handle]);
 

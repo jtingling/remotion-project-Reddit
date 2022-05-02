@@ -61,7 +61,7 @@ export const textToSpeech = async (
 
 	synthesizer.close();
 
-	await uploadTtsToS3(audioData, fileName);
+	await uploadToS3(audioData, fileName);
 
 	return createS3Url(fileName);
 };
@@ -86,7 +86,7 @@ const checkIfAudioHasAlreadyBeenSynthesized = async (fileName: string) => {
 	}
 };
 
-const uploadTtsToS3 = async (audioData: ArrayBuffer, fileName: string) => {
+const uploadToS3 = async (data: ArrayBuffer, fileName: string) => {
 	const bucketName = process.env.AWS_S3_BUCKET_NAME;
 	const awsRegion = process.env.AWS_S3_REGION;
 	const s3 = new S3Client({
@@ -101,7 +101,7 @@ const uploadTtsToS3 = async (audioData: ArrayBuffer, fileName: string) => {
 		new PutObjectCommand({
 			Bucket: bucketName,
 			Key: fileName,
-			Body: new Uint8Array(audioData),
+			Body: new Uint8Array(data),
 		})
 	);
 };
