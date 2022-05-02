@@ -1,6 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
-import {Audio, continueRender, delayRender} from 'remotion';
-import {textToSpeech} from '../TextToSpeech/index';
+import {Audio} from 'remotion';
 
 export const AudioTrack: React.FC<{
 	audio: string;
