@@ -10,6 +10,7 @@ import {Main} from './Main';
 import {
 	createIntro,
 	createBody,
+	createBodyFromComments,
 	calculateDuration,
 	calculateSegmentDuration,
 } from './utilities';
@@ -30,7 +31,15 @@ export const RemotionVideo: React.FC = () => {
 	const initVideoData = useCallback(async () => {
 		const data = {intro: {}, body: [{}]};
 		data.intro = await createIntro(inputProps.post.title);
-		data.body = await createBody(inputProps.post.selftext);
+		if (!inputProps.post.selftext) {
+			data.body = await createBodyFromComments(
+				inputProps.comments.postComments,
+				inputProps.comments.users
+			);
+		} else {
+			data.body = await createBody(inputProps.post.selftext);
+		}
+
 		const duration = await getVideoMetadata(inputProps.video);
 		const videoFrames = Math.round(duration.durationInSeconds) * 30;
 		setVideoFrames(videoFrames);
@@ -80,8 +89,8 @@ export const RemotionVideo: React.FC = () => {
 				component={Main}
 				durationInFrames={totalFrames}
 				fps={30}
-				width={1920}
-				height={1080}
+				width={1080}
+				height={1920}
 				defaultProps={{
 					videoFrames,
 					content,

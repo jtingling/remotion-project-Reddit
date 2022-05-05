@@ -7,11 +7,16 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
 import {Arrow} from './Arrow';
+import {ContentSlice} from '../../types';
 import {BubbleBody} from './BubbleBody';
 
 const inputProps = getInputProps();
-
-export const TextBox: React.FC = ({children}) => {
+interface iTextBox {
+	redditor: string;
+	snooImage: string;
+	text: any;
+}
+export const TextBox = ({redditor, snooImage, text}: iTextBox) => {
 	return (
 		<div
 			style={{
@@ -24,13 +29,13 @@ export const TextBox: React.FC = ({children}) => {
 		>
 			<Avatar
 				sx={{
-					width: '100px',
-					height: '100px',
+					width: '125px',
+					height: '125px',
 				}}
-				alt={inputProps.user.data.name}
-				src={inputProps.user.data.icon_img}
+				alt={redditor}
+				src={snooImage}
 			/>
-			<BubbleBody>{children}</BubbleBody>
+			<BubbleBody>{text}</BubbleBody>
 		</div>
 	);
 };

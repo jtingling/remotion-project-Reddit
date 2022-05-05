@@ -1,6 +1,9 @@
+import React from 'react';
 import {useCurrentFrame, useVideoConfig, spring} from 'remotion';
 import {Arrow} from '../Arrow';
-export const BubbleBody = ({children}) => {
+export const BubbleBody = ({
+	children,
+}: React.PropsWithChildren<{children: React.ReactNode}>) => {
 	const frame = useCurrentFrame();
 	const videoConfig = useVideoConfig();
 

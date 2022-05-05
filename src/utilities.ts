@@ -1,6 +1,6 @@
 import {textToSpeech} from './TextToSpeech';
 import {ContentSegments, ContentSlice} from './types';
-import {getAudioDuration, getVideoMetadata} from '@remotion/media-utils';
+import {getAudioDuration} from '@remotion/media-utils';
 import {GetObjectCommand, PutObjectCommand, S3Client} from '@aws-sdk/client-s3';
 import {getSignedUrl} from '@aws-sdk/s3-request-presigner';
 import md5 from 'md5';
@@ -17,6 +17,8 @@ export const createSegment = async (
 		url: audioUrl,
 		text: cleanedText,
 		duration: audioDuration,
+		snooURL: '',
+		name: '',
 	};
 };
 
@@ -29,6 +31,21 @@ export const createBody = async (segment: string): Promise<ContentSlice[]> => {
 	const segments: ContentSlice[] = [];
 	for (const i of content) {
 		segments.push(await createSegment(i));
+	}
+	return segments;
+};
+
+export const createBodyFromComments = async (
+	comments: any,
+	users: any
+): Promise<ContentSlice[]> => {
+	const segments: ContentSlice[] = [];
+	for (let i = 0; i < comments.length; i++) {
+		if (comments[i].data.body) {
+			segments.push(await createSegment(comments[i].data.body));
+			segments[i].snooURL = users[i].data.snoovatar_img;
+			segments[i].name = users[i].data.name;
+		}
 	}
 	return segments;
 };

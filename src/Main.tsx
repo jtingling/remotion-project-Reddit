@@ -1,15 +1,15 @@
-import {useState, useCallback, useEffect} from 'react';
+import {Key, ReactChild, ReactFragment, ReactPortal} from 'react';
+import * as React from 'react';
+import {AbsoluteFill, getInputProps, Sequence, Img} from 'remotion';
 import {
-	AbsoluteFill,
-	Composition,
-	continueRender,
-	delayRender,
-	getInputProps,
-	Sequence,
-	random,
-} from 'remotion';
+	Avatar,
+	Card,
+	CardContent,
+	CardHeader,
+	Badge,
+	Chip,
+} from '@mui/material';
 
-import {textToSpeech} from './TextToSpeech';
 import {ContentSegments} from './types';
 import {AudioTrack} from './Audio';
 import {VideoTrack} from './Video/';
@@ -27,41 +27,128 @@ export const Main: React.FC<{
 		<div
 			style={{
 				flex: 1,
-				backgroundColor: 'white',
+				backgroundImage: `url(${inputProps.subreddit.data.banner_background_image}), url(${inputProps.subreddit.data.banner_img})`,
+				backgroundSize: 'contain',
+				width: '100%',
 			}}
 		>
+			{console.log(inputProps)}
+			{console.log(content)}
+			{console.log(inputProps.post.link_flair_background_color)}
 			<Sequence from={0}>
-				<div
-					style={{
-						width: '250px',
-						height: '250px',
-						zIndex: 5,
-						backgroundImage: `url(${
-							inputProps.subreddit.data.community_icon ||
-							inputProps.subreddit.data.icon_img
-						})`,
-						backgroundRepeat: 'no-repeat',
-						backgroundSize: 'contain',
-						backgroundColor: 'transparent',
+				<Card
+					sx={{
+						position: 'absolute',
+						left: '0%',
+						top: '5%',
+						display: 'flex',
+						flexDirection: 'column',
+						flexWrap: 'wrap',
+						justifyContent: 'start',
+						alignItems: 'flex-start',
+						zIndex: 10,
+						opacity: 0.7,
+						backgroundColor: 'black',
+						borderTopRightRadius: '15px',
+						borderBottomRightRadius: '15px',
+						color: 'white',
 					}}
 				>
-					<Typography>
-						{inputProps.subreddit.data.display_name_prefixed}
-					</Typography>
-				</div>
+					<CardHeader
+						avatar={
+							<Avatar
+								alt="subreddit logo"
+								srcSet={`${inputProps.subreddit.data.community_icon}, ${inputProps.subreddit.data.icon_img}`}
+								sx={{width: '150px', height: '150px'}}
+							/>
+						}
+						titleTypographyProps={{
+							variant: 'h3',
+						}}
+						title={inputProps.subreddit.data.display_name_prefixed}
+						subheader={
+							<Chip
+								label={inputProps.post.link_flair_text}
+								sx={{
+									backgroundColor:
+										inputProps.post
+											.link_flair_background_color,
+									fontSize: '28px',
+								}}
+							/>
+						}
+					/>
+					<div style={{paddingLeft: '10px'}}>
+						<Typography variant="h6">
+							{inputProps.subreddit.data.public_description}
+						</Typography>
+					</div>
+					<CardContent>
+						<div
+							style={{
+								display: 'flex',
+								justifyContent: 'center',
+								gap: '10px',
+								flexWrap: 'wrap',
+								zIndex: 15,
+							}}
+						>
+							<Typography variant="h5">Awards:</Typography>
+							{inputProps.post.all_awardings.map(
+								(award: {
+									id: Key | null | undefined;
+									count:
+										| boolean
+										| ReactChild
+										| ReactFragment
+										| ReactPortal
+										| null
+										| undefined;
+									icon_url: string | undefined;
+								}) => {
+									return (
+										<Badge
+											key={award.id}
+											badgeContent={award.count}
+											color="primary"
+										>
+											<Img
+												src={award.icon_url}
+												style={{
+													width: 32,
+													height: 32,
+												}}
+											/>
+										</Badge>
+									);
+								}
+							)}
+						</div>
+					</CardContent>
+				</Card>
 			</Sequence>
 			<Sequence from={0} durationInFrames={content.intro?.duration}>
-				<AbsoluteFill style={{top: '10px', zIndex: 1}}>
+				<AbsoluteFill
+					style={{
+						top: '25%',
+						zIndex: 1,
+					}}
+				>
 					<AudioTrack audio={content.intro?.url as string} />
-					<TextBox>
-						<Comments selftext={content.intro?.text as string} />
-					</TextBox>
+					<TextBox
+						redditor={inputProps.user.data.name}
+						snooImage={inputProps.user.data.snoovatar_img}
+						text={
+							<Comments
+								selftext={content.intro?.text as string}
+								redditor={inputProps.post.author}
+							/>
+						}
+					/>
 				</AbsoluteFill>
 			</Sequence>
 			{content.body &&
-				content.body.map((c, idx) => {
-					const xRandom = random(c.duration);
-					const yRandom = random(idx);
+				content.body.map((c) => {
 					return (
 						<Sequence
 							key={(c.from as number) + c.duration}
@@ -70,15 +157,34 @@ export const Main: React.FC<{
 						>
 							<AbsoluteFill
 								style={{
-									top: Math.round(yRandom * 1000),
-									left: Math.round(xRandom * 1000),
+									top: '65%',
 									zIndex: 1,
 								}}
 							>
 								<AudioTrack audio={c.url} />
-								<TextBox>
-									<Comments selftext={c.text as string} />
-								</TextBox>
+								{console.log(c)}
+								<TextBox
+									redditor={
+										!c.name
+											? inputProps.post.author
+											: c.name
+									}
+									snooImage={
+										!c.snooURL
+											? inputProps.user.data.snoovatar_img
+											: c.snooURL
+									}
+									text={
+										<Comments
+											selftext={c.text as string}
+											redditor={
+												!c.name
+													? inputProps.post.author
+													: c.name
+											}
+										/>
+									}
+								/>
 							</AbsoluteFill>
 						</Sequence>
 					);

@@ -4,6 +4,8 @@ export type ContentSlice = {
 	text: string;
 	from?: number;
 	to?: number;
+	snooURL?: string;
+	name?: string;
 };
 
 export type ContentSegments = {

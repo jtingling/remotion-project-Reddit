@@ -27,7 +27,11 @@ export const VideoTrack: React.FC<{
 	}, [videoMetaData]);
 	return (
 		<Loop durationInFrames={videoFrames}>
-			<Video muted src={`${inputProps.video}`} />
+			<Video
+				muted
+				src={`${inputProps.video}`}
+				style={{width: 1080, height: 1920}}
+			/>
 		</Loop>
 	);
 };
