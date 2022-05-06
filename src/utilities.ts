@@ -26,11 +26,16 @@ export const createIntro = async (segment: string): Promise<ContentSlice> => {
 	return await createSegment(segment);
 };
 
-export const createBody = async (segment: string): Promise<ContentSlice[]> => {
-	const content = segment.split(/[!.]/);
+export const createBody = async (
+	segment: {selftext: string; author: string},
+	snoovatar: {snoovatar_img: string}
+): Promise<ContentSlice[]> => {
+	const content = segment.selftext.split(/[!.]/);
 	const segments: ContentSlice[] = [];
-	for (const i of content) {
-		segments.push(await createSegment(i));
+	for (let i = 0; i < content.length; i++) {
+		segments.push(await createSegment(content[i]));
+		segments[i].snooURL = snoovatar.snoovatar_img;
+		segments[i].name = segment.author;
 	}
 	return segments;
 };

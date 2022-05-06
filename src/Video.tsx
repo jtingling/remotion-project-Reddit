@@ -31,15 +31,14 @@ export const RemotionVideo: React.FC = () => {
 	const initVideoData = useCallback(async () => {
 		const data = {intro: {}, body: [{}]};
 		data.intro = await createIntro(inputProps.post.title);
-		if (!inputProps.post.selftext) {
-			data.body = await createBodyFromComments(
+		const body = await createBody(inputProps.post, inputProps.user.data);
+		data.body = body.concat(
+			await createBodyFromComments(
 				inputProps.comments.postComments,
 				inputProps.comments.users
-			);
-		} else {
-			data.body = await createBody(inputProps.post.selftext);
-		}
-
+			)
+		);
+		console.log('data: ', data);
 		const duration = await getVideoMetadata(inputProps.video);
 		const videoFrames = Math.round(duration.durationInSeconds) * 30;
 		setVideoFrames(videoFrames);
