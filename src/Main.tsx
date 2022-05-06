@@ -28,13 +28,13 @@ export const Main: React.FC<{
 			style={{
 				flex: 1,
 				backgroundImage: `url(${inputProps.subreddit.data.banner_background_image}), url(${inputProps.subreddit.data.banner_img})`,
+				backgroundColor: `${inputProps.subreddit.data.key_color}`,
 				backgroundSize: 'contain',
 				width: '100%',
 			}}
 		>
 			{console.log(inputProps)}
 			{console.log(content)}
-			{console.log(inputProps.post.link_flair_background_color)}
 			<Sequence from={0}>
 				<Card
 					sx={{
@@ -130,7 +130,7 @@ export const Main: React.FC<{
 			<Sequence from={0} durationInFrames={content.intro?.duration}>
 				<AbsoluteFill
 					style={{
-						top: '25%',
+						top: '70%',
 						zIndex: 1,
 					}}
 				>
@@ -169,11 +169,7 @@ export const Main: React.FC<{
 											? inputProps.post.author
 											: c.name
 									}
-									snooImage={
-										!c.snooURL
-											? inputProps.user.data.snoovatar_img
-											: c.snooURL
-									}
+									snooImage={!c.snooURL ? '' : c.snooURL}
 									text={
 										<Comments
 											selftext={c.text as string}

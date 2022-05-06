@@ -33,7 +33,11 @@ export const TextBox = ({redditor, snooImage, text}: iTextBox) => {
 					height: '125px',
 				}}
 				alt={redditor}
-				src={snooImage}
+				src={
+					!snooImage
+						? 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'
+						: snooImage
+				}
 			/>
 			<BubbleBody>{text}</BubbleBody>
 		</div>
