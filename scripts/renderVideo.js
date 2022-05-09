@@ -1,3 +1,3 @@
-import {renderVideo} from '../../scripts/dist/findPosts.js';
+import {renderVideo} from '../../scripts/dist/reddit/index.js';
 
 renderVideo();
