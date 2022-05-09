@@ -130,6 +130,9 @@ export const Main: React.FC<{
 			<Sequence from={0} durationInFrames={content.intro?.duration}>
 				<AbsoluteFill
 					style={{
+						display: 'flex',
+						justifyContent: 'start',
+						alignContent: 'center',
 						top: '70%',
 						zIndex: 1,
 					}}
@@ -157,12 +160,14 @@ export const Main: React.FC<{
 						>
 							<AbsoluteFill
 								style={{
-									top: '65%',
+									display: 'flex',
+									justifyContent: 'start',
+									alignContent: 'center',
+									top: '70%',
 									zIndex: 1,
 								}}
 							>
 								<AudioTrack audio={c.url} />
-								{console.log(c)}
 								<TextBox
 									redditor={
 										!c.name
