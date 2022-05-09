@@ -38,7 +38,6 @@ export const RemotionVideo: React.FC = () => {
 				inputProps.comments.users
 			)
 		);
-		console.log('data: ', data);
 		const duration = await getVideoMetadata(inputProps.video);
 		const videoFrames = Math.round(duration.durationInSeconds) * 30;
 		setVideoFrames(videoFrames);

@@ -1,4 +1,4 @@
-import {Container, Paper, Typography, Divider} from '@mui/material';
+import {Container, Typography, Divider} from '@mui/material';
 
 export const Comments: React.FC<{
 	selftext: string;
@@ -14,7 +14,7 @@ export const Comments: React.FC<{
 				padding: '5px',
 			}}
 		>
-			<Typography>{redditor} says:</Typography>
+			<Typography variant="h6">{redditor} says:</Typography>
 			<Divider />
 			<Typography variant="h6">{selftext}</Typography>
 		</Container>
