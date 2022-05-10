@@ -46,15 +46,28 @@ export const createBodyFromComments = async (
 ): Promise<ContentSlice[]> => {
 	const segments: ContentSlice[] = [];
 	for (let i = 0; i < comments.length; i++) {
-		if (comments[i] !== undefined && comments[i].data.body) {
-			comments[i].data.body
-				.split(/[!.?]/)
-				.forEach(async (sentence: string, idx: number) => {
-					segments.push(await createSegment(sentence));
-					segments[segments.length - 1].snooURL =
-						users[i].data.snoovatar_img;
-					segments[segments.length - 1].name = users[i].data.name;
-				});
+		if (comments[i].kind === 't1' && comments[i].data.body.length > 440) {
+			const filteredWords = comments[i].data.body
+				.split(/[!.]/)
+				.filter((word: string) => word.length > 0);
+			const segmentList: ContentSlice[] = await Promise.all(
+				filteredWords.map(async (word: string) => {
+					return await createSegment(word);
+				})
+			);
+			for (const s of segmentList) {
+				s.snooURL = users[i].data.snoovatar_img;
+				s.name = users[i].data.name;
+			}
+			segments.concat(segmentList);
+		} else if (comments[i].kind === 't1') {
+			const segment = await createSegment(comments[i].data.body);
+			segments.push(segment);
+			console.log(segments[i]);
+			if (segments[i]) {
+				segments[i].snooURL = users[i].data.snoovatar_img;
+				segments[i].name = users[i].data.name;
+			}
 		}
 	}
 	return segments;
@@ -84,7 +97,7 @@ export const calculateSegmentDuration = (
 };
 
 export const scrubText = (text: string): string => {
-	return text.replaceAll('\n', '').trim();
+	return text && text.replaceAll('\n', '').trim();
 };
 
 export const uploadVideo = async (
