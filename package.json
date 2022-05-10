@@ -4,8 +4,8 @@
 	"description": "My Remotion video",
 	"type": "module",
 	"scripts": {
-		"start": "remotion preview src/index.tsx",
-		"build": "remotion render src/index.tsx HelloWorld out/video.mp4",
+		"start": "remotion preview src/index.tsx --props=../scripts/posts/38c433c475fb127249f1972b38f6764c.json",
+		"build": "remotion render src/index.tsx Main out/video.mp4 --props=../scripts/posts/317ee97f491483e1f813c9f8b2f37f7c.json",
 		"upgrade": "remotion upgrade",
 		"server": "ts-node server.tsx",
 		"test": "eslint src --ext ts,tsx,js,jsx && tsc"
@@ -15,6 +15,9 @@
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.17.0",
 		"@aws-sdk/s3-request-presigner": "^3.66.0",
+		"@emotion/react": "^11.9.0",
+		"@emotion/styled": "^11.8.1",
+		"@mui/material": "^5.6.2",
 		"@remotion/bundler": "^2.3.2",
 		"@remotion/cli": "^2.3.2",
 		"@remotion/eslint-config": "^2.3.2",
