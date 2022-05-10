@@ -46,10 +46,15 @@ export const createBodyFromComments = async (
 ): Promise<ContentSlice[]> => {
 	const segments: ContentSlice[] = [];
 	for (let i = 0; i < comments.length; i++) {
-		if (comments[i].data.body) {
-			segments.push(await createSegment(comments[i].data.body));
-			segments[i].snooURL = users[i].data.snoovatar_img;
-			segments[i].name = users[i].data.name;
+		if (comments[i] !== undefined && comments[i].data.body) {
+			comments[i].data.body
+				.split(/[!.?]/)
+				.forEach(async (sentence: string, idx: number) => {
+					segments.push(await createSegment(sentence));
+					segments[segments.length - 1].snooURL =
+						users[i].data.snoovatar_img;
+					segments[segments.length - 1].name = users[i].data.name;
+				});
 		}
 	}
 	return segments;

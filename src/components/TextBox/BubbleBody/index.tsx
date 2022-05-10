@@ -1,12 +1,18 @@
-import React from 'react';
-import {useCurrentFrame, useVideoConfig, spring} from 'remotion';
+import React, {useEffect, useRef} from 'react';
+import {
+	useCurrentFrame,
+	useVideoConfig,
+	spring,
+	interpolate,
+	getInputProps,
+} from 'remotion';
 import {Arrow} from '../Arrow';
+
 export const BubbleBody = ({
 	children,
 }: React.PropsWithChildren<{children: React.ReactNode}>) => {
 	const frame = useCurrentFrame();
 	const videoConfig = useVideoConfig();
-
 	const value = spring({
 		frame,
 		from: -145,
@@ -20,6 +26,7 @@ export const BubbleBody = ({
 		<div style={{position: 'relative', top: `${value}px`}}>
 			<Arrow />
 			<div
+				id="speech-bubble"
 				style={{
 					position: 'relative',
 					top: '0px',
@@ -29,6 +36,8 @@ export const BubbleBody = ({
 					backgroundColor: 'white',
 					maxWidth: '440px',
 					minHeight: '70px',
+					maxHeight: '350px',
+					overflowY: 'scroll',
 				}}
 			>
 				<div>{children}</div>

@@ -6,15 +6,12 @@ import {
 	SpeechSynthesisResult,
 	SpeechSynthesizer,
 } from 'microsoft-cognitiveservices-speech-sdk';
-import {getInputProps} from 'remotion';
 const voices = {
 	ptBRWoman: 'pt-BR-FranciscaNeural',
 	ptBRMan: 'pt-BR-AntonioNeural',
 	enUSWoman1: 'en-US-JennyNeural',
 	enUSWoman2: 'en-US-AriaNeural',
 } as const;
-
-const inputProps = getInputProps();
 
 export const textToSpeech = async (
 	text: string,
@@ -29,7 +26,7 @@ export const textToSpeech = async (
 		throw new Error('Voice not found');
 	}
 
-	const fileName = `${md5(inputProps.title)}.mp3`;
+	const fileName = `${md5(text)}.mp3`;
 
 	const fileExists = await checkIfAudioHasAlreadyBeenSynthesized(fileName);
 
@@ -64,7 +61,7 @@ export const textToSpeech = async (
 
 	synthesizer.close();
 
-	await uploadTtsToS3(audioData, fileName);
+	await uploadToS3(audioData, fileName);
 
 	return createS3Url(fileName);
 };
@@ -89,7 +86,7 @@ const checkIfAudioHasAlreadyBeenSynthesized = async (fileName: string) => {
 	}
 };
 
-const uploadTtsToS3 = async (audioData: ArrayBuffer, fileName: string) => {
+const uploadToS3 = async (data: ArrayBuffer, fileName: string) => {
 	const bucketName = process.env.AWS_S3_BUCKET_NAME;
 	const awsRegion = process.env.AWS_S3_REGION;
 	const s3 = new S3Client({
@@ -104,7 +101,7 @@ const uploadTtsToS3 = async (audioData: ArrayBuffer, fileName: string) => {
 		new PutObjectCommand({
 			Bucket: bucketName,
 			Key: fileName,
-			Body: new Uint8Array(audioData),
+			Body: new Uint8Array(data),
 		})
 	);
 };

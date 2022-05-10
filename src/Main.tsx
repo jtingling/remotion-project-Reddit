@@ -12,7 +12,7 @@ import {
 
 import {ContentSegments} from './types';
 import {AudioTrack} from './Audio';
-import {VideoTrack} from './Video/';
+import {VideoTrack} from './Video/index';
 import {Comments} from './AudioText/Comments';
 import {TextBox} from './components/TextBox';
 import {Typography} from '@mui/material';
@@ -28,7 +28,7 @@ export const Main: React.FC<{
 			style={{
 				flex: 1,
 				backgroundImage: `url(${inputProps.subreddit.data.banner_background_image}), url(${inputProps.subreddit.data.banner_img})`,
-				backgroundColor: `${inputProps.subreddit.data.key_color}`,
+				backgroundColor: `${inputProps.subreddit.data.primary_color}`,
 				backgroundSize: 'contain',
 				width: '100%',
 			}}
@@ -133,7 +133,7 @@ export const Main: React.FC<{
 						display: 'flex',
 						justifyContent: 'start',
 						alignContent: 'center',
-						top: '70%',
+						top: '60%',
 						zIndex: 1,
 					}}
 				>
@@ -163,7 +163,7 @@ export const Main: React.FC<{
 									display: 'flex',
 									justifyContent: 'start',
 									alignContent: 'center',
-									top: '70%',
+									top: '60%',
 									zIndex: 1,
 								}}
 							>
