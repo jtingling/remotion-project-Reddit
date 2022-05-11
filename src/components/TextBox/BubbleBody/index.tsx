@@ -1,10 +1,8 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {
 	useCurrentFrame,
 	useVideoConfig,
 	spring,
-	interpolate,
-	getInputProps,
 } from 'remotion';
 import {Arrow} from '../Arrow';
 
@@ -37,7 +35,6 @@ export const BubbleBody = ({
 					maxWidth: '440px',
 					minHeight: '70px',
 					maxHeight: '350px',
-					overflowY: 'scroll',
 				}}
 			>
 				<div>{children}</div>
