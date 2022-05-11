@@ -30,7 +30,7 @@ export const RemotionVideo: React.FC = () => {
 
 	const initVideoData = useCallback(async () => {
 		const data = {intro: {}, body: [{}]};
-		data.intro = await createIntro(inputProps.post.title);
+		data.intro = await createIntro(inputProps.post, inputProps.user.data);
 		const body = await createBody(inputProps.post, inputProps.user.data);
 		data.body = body.concat(
 			await createBodyFromComments(
@@ -43,6 +43,7 @@ export const RemotionVideo: React.FC = () => {
 		setVideoFrames(videoFrames);
 		setTotalFrames(calculateDuration(data as ContentSegments));
 		setContent(calculateSegmentDuration(data as ContentSegments));
+		console.log(content);
 		continueRender(handle);
 	}, [handle]);
 

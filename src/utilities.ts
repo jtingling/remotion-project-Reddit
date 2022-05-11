@@ -7,6 +7,8 @@ import md5 from 'md5';
 
 export const createSegment = async (
 	segment: string,
+	snooURL: string,
+	name: string,
 	fps = 30
 ): Promise<ContentSlice> => {
 	const cleanedText = scrubText(segment);
@@ -17,66 +19,78 @@ export const createSegment = async (
 		url: audioUrl,
 		text: cleanedText,
 		duration: audioDuration,
-		snooURL: '',
-		name: '',
+		snooURL,
+		name,
 	};
 };
 
-export const createIntro = async (segment: string): Promise<ContentSlice> => {
-	return await createSegment(segment);
+export const createIntro = async (
+	segment: {title: string; author: string},
+	// eslint-disable-next-line camelcase
+	snoovatar: {snoovatar_img: string}
+): Promise<ContentSlice> => {
+	return createSegment(
+		segment.title,
+		snoovatar.snoovatar_img,
+		segment.author
+	);
 };
 
 export const createBody = async (
 	segment: {selftext: string; author: string},
+	// eslint-disable-next-line camelcase
 	snoovatar: {snoovatar_img: string}
 ): Promise<ContentSlice[]> => {
+	const segments = [];
 	const content = segment.selftext.split(/[!.]/);
-	const segments: ContentSlice[] = [];
-	for (let i = 0; i < content.length; i++) {
-		segments.push(await createSegment(content[i]));
-		segments[i].snooURL = snoovatar.snoovatar_img;
-		segments[i].name = segment.author;
-	}
-	return segments;
+	const result: Promise<ContentSlice>[] = content.map((sentence: string) => {
+		return createSegment(sentence, snoovatar.snoovatar_img, segment.author);
+	});
+	segments.push(...result);
+	const segmentLists = await Promise.all(segments);
+	return segmentLists;
 };
 
 export const createBodyFromComments = async (
 	comments: any,
 	users: any
 ): Promise<ContentSlice[]> => {
-	const segments: ContentSlice[] = [];
+	const segments = [];
 	for (let i = 0; i < comments.length; i++) {
 		if (comments[i].kind === 't1' && comments[i].data.body.length > 440) {
 			const filteredWords = comments[i].data.body
 				.split(/[!.]/)
 				.filter((word: string) => word.length > 0);
-			const segmentList: ContentSlice[] = await Promise.all(
-				filteredWords.map(async (word: string) => {
-					return await createSegment(word);
-				})
+			const result: Promise<ContentSlice>[] = filteredWords.map(
+				(word: string) => {
+					return createSegment(
+						word,
+						users[i].data.snoovatar_img,
+						users[i].data.name
+					);
+				}
 			);
-			for (const s of segmentList) {
-				s.snooURL = users[i].data.snoovatar_img;
-				s.name = users[i].data.name;
-			}
-			segments.concat(segmentList);
+			segments.push(...result);
 		} else if (comments[i].kind === 't1') {
-			const segment = await createSegment(comments[i].data.body);
-			segments.push(segment);
-			console.log(segments[i]);
-			if (segments[i]) {
-				segments[i].snooURL = users[i].data.snoovatar_img;
-				segments[i].name = users[i].data.name;
-			}
+			const result: Promise<ContentSlice> = createSegment(
+				comments[i].data.body,
+				users[i].data.snoovatar_img,
+				users[i].data.name
+			);
+			segments.push(result);
 		}
 	}
-	return segments;
+	const segmentLists = await Promise.all(segments);
+	return segmentLists;
 };
 
 export const calculateDuration = (content: ContentSegments): number => {
 	let sum = 0;
 	if (content.body !== undefined && content.intro !== undefined) {
-		content.body.forEach((c) => (sum += c.duration));
+		content.body.forEach((c) => {
+			sum += c.duration;
+			return null;
+		});
 		sum += content.intro.duration;
 	}
 	return sum;
