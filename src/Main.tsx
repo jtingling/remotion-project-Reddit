@@ -71,18 +71,16 @@ export const Main: React.FC<{
 								<AudioTrack audio={c.url} />
 								<TextBox
 									redditor={
-										!c.name
-											? inputProps.post.author
-											: c.name
+										c.name ? c.name : inputProps.post.author
 									}
-									snooImage={!c.snooURL ? '' : c.snooURL}
+									snooImage={c.snooURL ? c.snooURL : ''}
 									text={
 										<Comments
 											selftext={c.text as string}
 											redditor={
-												!c.name
-													? inputProps.post.author
-													: c.name
+												c.name
+													? c.name
+													: inputProps.post.author
 											}
 										/>
 									}
