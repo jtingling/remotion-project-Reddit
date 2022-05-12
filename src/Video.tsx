@@ -1,78 +1,79 @@
 import {useState, useEffect, useCallback} from 'react';
-import {getAudioDuration} from '@remotion/media-utils';
+import {getVideoMetadata} from '@remotion/media-utils';
 import {
 	Composition,
 	continueRender,
 	delayRender,
 	getInputProps,
 } from 'remotion';
-import {textToSpeech} from './TextToSpeech';
-import {HelloWorld} from './HelloWorld';
+import {Main} from './Main';
+import {
+	createIntro,
+	createBody,
+	createBodyFromComments,
+	calculateDuration,
+	calculateSegmentDuration,
+} from './utilities';
+import {ContentSegments} from './types';
+import {checkForEnvVars} from './checkForEnvVars';
 
 const inputProps = getInputProps();
-
+const defaultContentValue = {
+	intro: undefined,
+	body: undefined,
+	numberOfSegments: 0,
+};
 export const RemotionVideo: React.FC = () => {
 	const [handle] = useState(() => delayRender());
-	const [duration, setDuration] = useState<number>(300);
+	const [videoFrames, setVideoFrames] = useState<number>(1);
+	const [totalFrames, setTotalFrames] = useState<number>(1);
+	const [content, setContent] = useState<ContentSegments>(
+		defaultContentValue as ContentSegments
+	);
 
-	const getDuration = useCallback(async () => {
-		console.log(inputProps);
-		const url = await textToSpeech(
-			inputProps.title + ' ' + inputProps.titleText,
-			'enUSWoman2'
+	const initVideoData = useCallback(async () => {
+		const data = {intro: {}, body: [{}], numberOfSegments: 0};
+		data.intro = await createIntro(inputProps.post, inputProps.user.data);
+		const body = await createBody(inputProps.post, inputProps.user.data);
+		data.body = body.concat(
+			await createBodyFromComments(
+				inputProps.comments.postComments,
+				inputProps.comments.users
+			)
 		);
-		const imported = await getAudioDuration(url);
-		const duration = Math.round(imported) * 30;
-		setDuration(duration);
+		const duration = await getVideoMetadata(inputProps.video);
+		const videoFrames = Math.round(duration.durationInSeconds) * 30;
+		setVideoFrames(videoFrames);
+		setTotalFrames(
+			calculateDuration(
+				data as ContentSegments,
+				inputProps.metaData.duration,
+				30
+			)
+		);
+		setContent(calculateSegmentDuration(data as ContentSegments));
+		console.log(content);
 		continueRender(handle);
 	}, [handle]);
 
 	useEffect(() => {
-		getDuration();
-	}, [getDuration, handle]);
+		initVideoData();
+	}, [initVideoData]);
 
-	if (!process.env.AZURE_TTS_KEY) {
-		throw new Error(
-			'AZURE_TTS_KEY environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
-	if (!process.env.AZURE_TTS_REGION) {
-		throw new Error(
-			'AZURE_TTS_REGION environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
-	if (!process.env.AWS_S3_BUCKET_NAME) {
-		throw new Error(
-			'AWS_S3_BUCKET_NAME environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
-	if (!process.env.AWS_S3_REGION) {
-		throw new Error(
-			'AWS_S3_REGION environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
-	if (!process.env.AWS_ACCESS_KEY_ID) {
-		throw new Error(
-			'AWS_ACCESS_KEY_ID environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
-	if (!process.env.AWS_SECRET_ACCESS_KEY) {
-		throw new Error(
-			'AWS_SECRET_ACCESS_KEY environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
+	checkForEnvVars(process.env);
+
 	return (
 		<>
 			<Composition
-				id="HelloWorld"
-				component={HelloWorld}
-				durationInFrames={duration}
+				id="Main"
+				component={Main}
+				durationInFrames={totalFrames}
 				fps={30}
-				width={1920}
-				height={1080}
+				width={1080}
+				height={1920}
 				defaultProps={{
-					titleText: '',
-					titleColor: 'black',
+					videoFrames,
+					content,
 				}}
 			/>
 		</>
