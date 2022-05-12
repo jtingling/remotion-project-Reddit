@@ -117,6 +117,6 @@ const createS3Url = async (filename: string) => {
 		},
 	});
 	const command = new GetObjectCommand({Bucket: bucketName, Key: filename});
-	const url = await getSignedUrl(client, command, {expiresIn: 3600});
+	const url = await getSignedUrl(client, command, {expiresIn: 4800});
 	return url;
 };
