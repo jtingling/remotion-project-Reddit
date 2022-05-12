@@ -15,6 +15,7 @@ import {
 	calculateSegmentDuration,
 } from './utilities';
 import {ContentSegments} from './types';
+import {checkForEnvVars} from './checkForEnvVars';
 
 const inputProps = getInputProps();
 const defaultContentValue = {
@@ -41,7 +42,13 @@ export const RemotionVideo: React.FC = () => {
 		const duration = await getVideoMetadata(inputProps.video);
 		const videoFrames = Math.round(duration.durationInSeconds) * 30;
 		setVideoFrames(videoFrames);
-		setTotalFrames(calculateDuration(data as ContentSegments));
+		setTotalFrames(
+			calculateDuration(
+				data as ContentSegments,
+				inputProps.metaData.duration,
+				30
+			)
+		);
 		setContent(calculateSegmentDuration(data as ContentSegments));
 		console.log(content);
 		continueRender(handle);
@@ -51,36 +58,8 @@ export const RemotionVideo: React.FC = () => {
 		initVideoData();
 	}, [initVideoData]);
 
-	if (!process.env.AZURE_TTS_KEY) {
-		throw new Error(
-			'AZURE_TTS_KEY environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
-	if (!process.env.AZURE_TTS_REGION) {
-		throw new Error(
-			'AZURE_TTS_REGION environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
-	if (!process.env.AWS_S3_BUCKET_NAME) {
-		throw new Error(
-			'AWS_S3_BUCKET_NAME environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
-	if (!process.env.AWS_S3_REGION) {
-		throw new Error(
-			'AWS_S3_REGION environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
-	if (!process.env.AWS_ACCESS_KEY_ID) {
-		throw new Error(
-			'AWS_ACCESS_KEY_ID environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
-	if (!process.env.AWS_SECRET_ACCESS_KEY) {
-		throw new Error(
-			'AWS_SECRET_ACCESS_KEY environment variable is missing. Read the docs first and complete the setup.'
-		);
-	}
+	checkForEnvVars(process.env);
+
 	return (
 		<>
 			<Composition
