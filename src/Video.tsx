@@ -21,16 +21,18 @@ const inputProps = getInputProps();
 const defaultContentValue = {
 	intro: undefined,
 	body: undefined,
+	numberOfSegments: 0,
 };
 export const RemotionVideo: React.FC = () => {
 	const [handle] = useState(() => delayRender());
 	const [videoFrames, setVideoFrames] = useState<number>(1);
 	const [totalFrames, setTotalFrames] = useState<number>(1);
-	const [content, setContent] =
-		useState<ContentSegments>(defaultContentValue);
+	const [content, setContent] = useState<ContentSegments>(
+		defaultContentValue as ContentSegments
+	);
 
 	const initVideoData = useCallback(async () => {
-		const data = {intro: {}, body: [{}]};
+		const data = {intro: {}, body: [{}], numberOfSegments: 0};
 		data.intro = await createIntro(inputProps.post, inputProps.user.data);
 		const body = await createBody(inputProps.post, inputProps.user.data);
 		data.body = body.concat(

@@ -99,10 +99,12 @@ export const calculateDuration = (
 				);
 			}
 			sum += content.intro.duration;
+			content.numberOfSegments++;
 			content.body.forEach((c) => {
 				const checkDuration = c.duration + sum;
 				if (checkDuration < totalFrames) {
 					sum += c.duration;
+					content.numberOfSegments++;
 				} else {
 					return sum;
 				}

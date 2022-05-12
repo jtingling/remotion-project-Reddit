@@ -52,42 +52,47 @@ export const Main: React.FC<{
 				</AbsoluteFill>
 			</Sequence>
 			{content.body &&
-				content.body.map((c) => {
-					return (
-						<Sequence
-							key={(c.from as number) + c.duration}
-							from={(c.from as number) - 2}
-							durationInFrames={(c.duration as number) + 1}
-						>
-							<AbsoluteFill
-								style={{
-									display: 'flex',
-									justifyContent: 'start',
-									alignContent: 'center',
-									top: '70%',
-									zIndex: 1,
-								}}
+				content.body.map((c, idx) => {
+					if (idx < content.numberOfSegments - 2) {
+						return (
+							<Sequence
+								key={(c.from as number) + c.duration}
+								from={(c.from as number) - 2}
+								durationInFrames={(c.duration as number) + 1}
 							>
-								<AudioTrack audio={c.url} />
-								<TextBox
-									redditor={
-										c.name ? c.name : inputProps.post.author
-									}
-									snooImage={c.snooURL ? c.snooURL : ''}
-									text={
-										<Comments
-											selftext={c.text as string}
-											redditor={
-												c.name
-													? c.name
-													: inputProps.post.author
-											}
-										/>
-									}
-								/>
-							</AbsoluteFill>
-						</Sequence>
-					);
+								<AbsoluteFill
+									style={{
+										display: 'flex',
+										justifyContent: 'start',
+										alignContent: 'center',
+										top: '70%',
+										zIndex: 1,
+									}}
+								>
+									<AudioTrack audio={c.url} />
+									<TextBox
+										redditor={
+											c.name
+												? c.name
+												: inputProps.post.author
+										}
+										snooImage={c.snooURL ? c.snooURL : ''}
+										text={
+											<Comments
+												selftext={c.text as string}
+												redditor={
+													c.name
+														? c.name
+														: inputProps.post.author
+												}
+											/>
+										}
+									/>
+								</AbsoluteFill>
+							</Sequence>
+						);
+					}
+					return null;
 				})}
 			<Sequence from={0}>
 				<VideoTrack videoFrames={videoFrames} />

@@ -11,4 +11,5 @@ export type ContentSlice = {
 export type ContentSegments = {
 	intro?: ContentSlice;
 	body?: ContentSlice[];
+	numberOfSegments: 0;
 };
