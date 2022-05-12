@@ -84,14 +84,32 @@ export const createBodyFromComments = async (
 	return segmentLists;
 };
 
-export const calculateDuration = (content: ContentSegments): number => {
+export const calculateDuration = (
+	content: ContentSegments,
+	desiredLengthInSeconds: number,
+	fps: number
+): number => {
 	let sum = 0;
-	if (content.body !== undefined && content.intro !== undefined) {
-		content.body.forEach((c) => {
-			sum += c.duration;
-			return null;
-		});
-		sum += content.intro.duration;
+	const totalFrames = desiredLengthInSeconds * fps;
+	if (content.body && content.intro) {
+		try {
+			if (content.intro.duration > totalFrames) {
+				throw new Error(
+					'Intro duration is longer than video duration, aborting...'
+				);
+			}
+			sum += content.intro.duration;
+			content.body.forEach((c) => {
+				const checkDuration = c.duration + sum;
+				if (checkDuration < totalFrames) {
+					sum += c.duration;
+				} else {
+					return sum;
+				}
+			});
+		} catch (e) {
+			console.error(e);
+		}
 	}
 	return sum;
 };
