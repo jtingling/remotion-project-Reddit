@@ -9,7 +9,6 @@ export const VideoTrack: React.FC<{
 		<Loop durationInFrames={videoFrames}>
 			<Video
 				muted
-				crossOrigin="youtube.com"
 				style={{
 					position: 'absolute',
 					top: '25%',

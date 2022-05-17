@@ -52,7 +52,6 @@ export const RemotionVideo: React.FC = () => {
 			)
 		);
 		setContent(calculateSegmentDuration(data as ContentSegments));
-		console.log(content);
 		continueRender(handle);
 	}, [handle]);
 
