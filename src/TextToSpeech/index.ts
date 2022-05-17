@@ -18,8 +18,8 @@ export const textToSpeech = async (
 	voice: keyof typeof voices
 ): Promise<string> => {
 	const speechConfig = SpeechConfig.fromSubscription(
-		process.env.AZURE_TTS_KEY || '',
-		process.env.AZURE_TTS_REGION || ''
+		process.env.REMOTION_AZURE_TTS_KEY || '',
+		process.env.REMOTION_AZURE_TTS_REGION || ''
 	);
 
 	if (!voices[voice]) {
@@ -67,13 +67,13 @@ export const textToSpeech = async (
 };
 
 const checkIfAudioHasAlreadyBeenSynthesized = async (fileName: string) => {
-	const bucketName = process.env.AWS_S3_BUCKET_NAME;
-	const awsRegion = process.env.AWS_S3_REGION;
+	const bucketName = process.env.REMOTION_AWS_S3_BUCKET_NAME;
+	const awsRegion = process.env.REMOTION_AWS_S3_REGION;
 	const s3 = new S3Client({
 		region: awsRegion,
 		credentials: {
-			accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+			accessKeyId: process.env.REMOTION_AWS_ACCESS_KEY_ID || '',
+			secretAccessKey: process.env.REMOTION_AWS_SECRET_ACCESS_KEY || '',
 		},
 	});
 
@@ -87,13 +87,13 @@ const checkIfAudioHasAlreadyBeenSynthesized = async (fileName: string) => {
 };
 
 const uploadToS3 = async (data: ArrayBuffer, fileName: string) => {
-	const bucketName = process.env.AWS_S3_BUCKET_NAME;
-	const awsRegion = process.env.AWS_S3_REGION;
+	const bucketName = process.env.REMOTION_AWS_S3_BUCKET_NAME;
+	const awsRegion = process.env.REMOTION_AWS_S3_REGION;
 	const s3 = new S3Client({
 		region: awsRegion,
 		credentials: {
-			accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+			accessKeyId: process.env.REMOTION_AWS_ACCESS_KEY_ID || '',
+			secretAccessKey: process.env.REMOTION_AWS_SECRET_ACCESS_KEY || '',
 		},
 	});
 
@@ -107,13 +107,13 @@ const uploadToS3 = async (data: ArrayBuffer, fileName: string) => {
 };
 
 const createS3Url = async (filename: string) => {
-	const bucketName = process.env.AWS_S3_BUCKET_NAME;
-	const awsRegion = process.env.AWS_S3_REGION;
+	const bucketName = process.env.REMOTION_AWS_S3_BUCKET_NAME;
+	const awsRegion = process.env.REMOTION_AWS_S3_REGION;
 	const client = new S3Client({
 		region: awsRegion,
 		credentials: {
-			accessKeyId: process.env.AWS_ACCESS_KEY_ID || '',
-			secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || '',
+			accessKeyId: process.env.REMOTION_AWS_ACCESS_KEY_ID || '',
+			secretAccessKey: process.env.REMOTION_AWS_SECRET_ACCESS_KEY || '',
 		},
 	});
 	const command = new GetObjectCommand({Bucket: bucketName, Key: filename});
