@@ -23,8 +23,6 @@ export const Main: React.FC<{
 				width: '100%',
 			}}
 		>
-			{console.log(inputProps)}
-			{console.log(content)}
 			<Sequence from={0}>
 				<TitleCard />
 			</Sequence>
