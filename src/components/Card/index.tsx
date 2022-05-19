@@ -1,5 +1,5 @@
 import {Key, ReactChild, ReactFragment, ReactPortal} from 'react';
-import {AbsoluteFill, getInputProps, Img} from 'remotion';
+import {getInputProps, Img} from 'remotion';
 import {
 	Avatar,
 	Card,
@@ -81,6 +81,7 @@ export const TitleCard = () => {
 								| ReactPortal
 								| null
 								| undefined;
+							// eslint-disable-next-line camelcase
 							icon_url: string | undefined;
 						}) => {
 							return (
