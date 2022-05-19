@@ -6,7 +6,7 @@ interface iTextBox {
 	snooImage: string;
 	text: any;
 }
-export const TextBox = ({redditor, snooImage, text}: iTextBox) => {
+export const TextBox: React.FC<iTextBox> = ({redditor, snooImage, text}) => {
 	return (
 		<div
 			style={{
@@ -24,9 +24,9 @@ export const TextBox = ({redditor, snooImage, text}: iTextBox) => {
 				}}
 				alt={redditor}
 				src={
-					!snooImage
-						? 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'
-						: snooImage
+					snooImage
+						? snooImage
+						: 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'
 				}
 			/>
 			<BubbleBody>{text}</BubbleBody>

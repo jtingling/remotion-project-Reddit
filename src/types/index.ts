@@ -8,8 +8,11 @@ export type ContentSlice = {
 	name?: string;
 };
 
-export type ContentSegments = {
-	intro?: ContentSlice;
-	body?: ContentSlice[];
+export type iSegmentList = {
+	segmentsList: ContentSlice[];
 	numberOfSegments: 0;
 };
+
+export type iComments = [{data: {body: string}; kind: string}];
+// eslint-disable-next-line camelcase
+export type iUsers = [{data: {snoovatar_img: string; name: string}}];

@@ -12,46 +12,45 @@ import {
 	createBody,
 	createBodyFromComments,
 	calculateDuration,
-	calculateSegmentDuration,
+	calculateSegmentTimeLine,
 } from './utilities';
-import {ContentSegments} from './types';
+import {iSegmentList} from './types';
 import {checkForEnvVars} from './checkForEnvVars';
 
 const inputProps = getInputProps();
-const defaultContentValue = {
-	intro: undefined,
-	body: undefined,
-	numberOfSegments: 0,
-};
+
+const defaultContentValue = {segmentsList: [], numberOfSegments: 0};
+
 export const RemotionVideo: React.FC = () => {
 	const [handle] = useState(() => delayRender());
 	const [videoFrames, setVideoFrames] = useState<number>(1);
 	const [totalFrames, setTotalFrames] = useState<number>(1);
-	const [content, setContent] = useState<ContentSegments>(
-		defaultContentValue as ContentSegments
+	const [content, setContent] = useState<iSegmentList>(
+		defaultContentValue as iSegmentList
 	);
 
 	const initVideoData = useCallback(async () => {
-		const data = {intro: {}, body: [{}], numberOfSegments: 0};
-		data.intro = await createIntro(inputProps.post, inputProps.user.data);
-		const body = await createBody(inputProps.post, inputProps.user.data);
-		data.body = body.concat(
-			await createBodyFromComments(
+		const clips: iSegmentList = {segmentsList: [], numberOfSegments: 0};
+		clips.segmentsList.push(
+			await createIntro(inputProps.post, inputProps.user.data)
+		);
+		clips.segmentsList.push(
+			...(await createBody(inputProps.post, inputProps.user.data))
+		);
+		clips.segmentsList.push(
+			...(await createBodyFromComments(
 				inputProps.comments.postComments,
 				inputProps.comments.users
-			)
+			))
 		);
 		const duration = await getVideoMetadata(inputProps.video);
 		const videoFrames = Math.round(duration.durationInSeconds) * 30;
 		setVideoFrames(videoFrames);
 		setTotalFrames(
-			calculateDuration(
-				data as ContentSegments,
-				inputProps.metaData.duration,
-				30
-			)
+			calculateDuration(clips, inputProps.metaData.duration, 30)
 		);
-		setContent(calculateSegmentDuration(data as ContentSegments));
+		setContent(calculateSegmentTimeLine(clips));
+
 		continueRender(handle);
 	}, [handle]);
 
