@@ -8,16 +8,22 @@ import {
 } from 'remotion';
 import {Main} from './Main';
 import {
-	createIntro,
-	createBody,
-	createBodyFromComments,
+	createSegmentFromTitle,
+	createSegmentsFromSelfText,
+	createSegmentsFromComments,
 	calculateDuration,
 	calculateSegmentTimeLine,
 } from './utilities';
 import {iSegmentList} from './types';
 import {checkForEnvVars} from './checkForEnvVars';
 
-const inputProps = getInputProps();
+const {
+	user: {data},
+	post,
+	comments: {postComments, users},
+	metaData: {duration},
+	video,
+} = getInputProps();
 
 const defaultContentValue = {segmentsList: [], numberOfSegments: 0};
 
@@ -31,26 +37,18 @@ export const RemotionVideo: React.FC = () => {
 
 	const initVideoData = useCallback(async () => {
 		const clips: iSegmentList = {segmentsList: [], numberOfSegments: 0};
+		clips.segmentsList.push(await createSegmentFromTitle(post, data));
 		clips.segmentsList.push(
-			await createIntro(inputProps.post, inputProps.user.data)
+			...(await createSegmentsFromSelfText(post, data))
 		);
 		clips.segmentsList.push(
-			...(await createBody(inputProps.post, inputProps.user.data))
+			...(await createSegmentsFromComments(postComments, users))
 		);
-		clips.segmentsList.push(
-			...(await createBodyFromComments(
-				inputProps.comments.postComments,
-				inputProps.comments.users
-			))
-		);
-		const duration = await getVideoMetadata(inputProps.video);
-		const videoFrames = Math.round(duration.durationInSeconds) * 30;
+		const videoMetaData = await getVideoMetadata(video);
+		const videoFrames = Math.round(videoMetaData.durationInSeconds) * 30;
 		setVideoFrames(videoFrames);
-		setTotalFrames(
-			calculateDuration(clips, inputProps.metaData.duration, 30)
-		);
+		setTotalFrames(calculateDuration(clips, duration, 30));
 		setContent(calculateSegmentTimeLine(clips));
-
 		continueRender(handle);
 	}, [handle]);
 

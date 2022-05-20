@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import {Key, ReactChild, ReactFragment, ReactPortal} from 'react';
 import {getInputProps, Img} from 'remotion';
 import {
@@ -10,7 +11,17 @@ import {
 	Typography,
 } from '@mui/material';
 
-const inputProps = getInputProps();
+const {
+	subreddit: {
+		data: {
+			community_icon,
+			icon_img,
+			display_name_prefixed,
+			public_description,
+		},
+	},
+	post: {link_flair_background_color, link_flair_text, all_awardings},
+} = getInputProps();
 
 export const TitleCard = () => {
 	return (
@@ -18,7 +29,7 @@ export const TitleCard = () => {
 			sx={{
 				position: 'absolute',
 				left: '0%',
-				top: '5%',
+				top: '2%',
 				display: 'flex',
 				flexDirection: 'column',
 				flexWrap: 'wrap',
@@ -36,29 +47,26 @@ export const TitleCard = () => {
 				avatar={
 					<Avatar
 						alt="subreddit logo"
-						srcSet={`${inputProps.subreddit.data.community_icon}, ${inputProps.subreddit.data.icon_img}`}
+						srcSet={`${community_icon}, ${icon_img}`}
 						sx={{width: '150px', height: '150px'}}
 					/>
 				}
 				titleTypographyProps={{
 					variant: 'h3',
 				}}
-				title={inputProps.subreddit.data.display_name_prefixed}
+				title={display_name_prefixed}
 				subheader={
 					<Chip
-						label={inputProps.post.link_flair_text}
+						label={link_flair_text}
 						sx={{
-							backgroundColor:
-								inputProps.post.link_flair_background_color,
+							backgroundColor: link_flair_background_color,
 							fontSize: '28px',
 						}}
 					/>
 				}
 			/>
 			<div style={{paddingLeft: '10px'}}>
-				<Typography variant="h6">
-					{inputProps.subreddit.data.public_description}
-				</Typography>
+				<Typography variant="h6">{public_description}</Typography>
 			</div>
 			<CardContent>
 				<div
@@ -71,7 +79,7 @@ export const TitleCard = () => {
 					}}
 				>
 					<Typography variant="h5">Awards:</Typography>
-					{inputProps.post.all_awardings.map(
+					{all_awardings.map(
 						(award: {
 							id: Key | null | undefined;
 							count:

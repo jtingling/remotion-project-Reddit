@@ -1,6 +1,6 @@
 import {Video, Loop, getInputProps} from 'remotion';
 
-const inputProps = getInputProps();
+const {video} = getInputProps();
 
 export const VideoTrack: React.FC<{
 	videoFrames: number;
@@ -11,12 +11,12 @@ export const VideoTrack: React.FC<{
 				muted
 				style={{
 					position: 'absolute',
-					top: '25%',
+					top: '20%',
 					left: 0,
 					width: '100%',
 					height: 'auto',
 				}}
-				src={inputProps.video}
+				src={video}
 			/>
 		</Loop>
 	);
