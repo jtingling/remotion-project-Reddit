@@ -14,9 +14,9 @@ export const Comments: React.FC<{
 				padding: '5px',
 			}}
 		>
-			<Typography variant="h6">{redditor} says:</Typography>
+			<Typography variant="h4">{redditor} says:</Typography>
 			<Divider />
-			<Typography variant="h6">{selftext}</Typography>
+			<Typography variant="h5">{selftext}</Typography>
 		</Container>
 	);
 };

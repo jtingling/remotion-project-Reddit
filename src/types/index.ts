@@ -16,3 +16,9 @@ export type iSegmentList = {
 export type iComments = [{data: {body: string}; kind: string}];
 // eslint-disable-next-line camelcase
 export type iUsers = [{data: {snoovatar_img: string; name: string}}];
+
+export type iTextBox = {
+	redditor: string;
+	snooImage: string;
+	text: any;
+};

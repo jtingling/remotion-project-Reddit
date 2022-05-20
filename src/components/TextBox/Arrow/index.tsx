@@ -3,8 +3,8 @@ export const Arrow = () => {
 		<div
 			style={{
 				position: 'absolute',
-				top: '-40px',
-				left: '-117px',
+				top: '245px',
+				left: '92px',
 				width: 0,
 				height: 0,
 				border: '150px solid transparent',

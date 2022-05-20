@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-	useCurrentFrame,
-	useVideoConfig,
-	spring,
-} from 'remotion';
+import {useCurrentFrame, useVideoConfig, spring} from 'remotion';
 import {Arrow} from '../Arrow';
 
 export const BubbleBody = ({
@@ -27,12 +23,12 @@ export const BubbleBody = ({
 				id="speech-bubble"
 				style={{
 					position: 'relative',
-					top: '0px',
-					left: '40px',
+					top: '295px',
+					left: '250px',
 					display: 'flex',
 					borderRadius: '10px',
 					backgroundColor: 'white',
-					maxWidth: '440px',
+					maxWidth: '500px',
 					minHeight: '70px',
 					maxHeight: '350px',
 				}}

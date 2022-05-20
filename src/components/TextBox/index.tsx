@@ -1,33 +1,36 @@
+import {Img} from 'remotion';
 import Avatar from '@mui/material/Avatar';
 import {BubbleBody} from './BubbleBody';
+import bgImg from '../../../public/pexels-marcelo-jaboo-696407.jpg';
+import {iTextBox} from '../../types';
 
-interface iTextBox {
-	redditor: string;
-	snooImage: string;
-	text: any;
-}
 export const TextBox: React.FC<iTextBox> = ({redditor, snooImage, text}) => {
 	return (
 		<div
 			style={{
-				position: 'relative',
-				left: '250px',
-				marginTop: '2%',
+				backgroundImage: `url(${bgImg})`,
+				backgroundRepeat: 'no-repeat',
+				backgroundSize: '100%',
+				backgroundPosition: '50% 55%',
+				position: 'absolute',
+				left: '0px',
+				top: '-355px',
+				width: '100%',
+				height: '575px',
 				zIndex: 5,
 				display: 'flex',
 			}}
 		>
 			<Avatar
 				sx={{
-					width: '125px',
-					height: '125px',
+					position: 'relative',
+					top: '240px',
+					left: '195px',
+					width: '170px',
+					height: '170px',
 				}}
 				alt={redditor}
-				src={
-					snooImage
-						? snooImage
-						: 'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png'
-				}
+				src={snooImage}
 			/>
 			<BubbleBody>{text}</BubbleBody>
 		</div>
