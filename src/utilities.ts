@@ -16,12 +16,14 @@ export const createSegment = async (
 		url: audioUrl,
 		text: cleanedText,
 		duration: audioDuration,
-		snooURL,
+		snooURL:
+			snooURL ||
+			'https://www.redditstatic.com/avatars/avatar_default_02_A5A4A4.png',
 		name,
 	};
 };
 
-export const createIntro = async (
+export const createSegmentFromTitle = async (
 	segment: {title: string; author: string},
 	// eslint-disable-next-line camelcase
 	snoovatar: {snoovatar_img: string}
@@ -33,7 +35,7 @@ export const createIntro = async (
 	);
 };
 
-export const createBody = async (
+export const createSegmentsFromSelfText = async (
 	segment: {selftext: string; author: string},
 	// eslint-disable-next-line camelcase
 	snoovatar: {snoovatar_img: string}
@@ -48,7 +50,7 @@ export const createBody = async (
 	return segmentLists;
 };
 
-export const createBodyFromComments = async (
+export const createSegmentsFromComments = async (
 	comments: iComments,
 	users: iUsers
 ): Promise<ContentSlice[]> => {
@@ -89,10 +91,10 @@ export const calculateDuration = (
 	let sum = 0;
 	const totalFrames = desiredLengthInSeconds * fps;
 	if (content) {
-		content.segmentsList.forEach((c) => {
-			const checkDuration = c.duration + sum;
+		content.segmentsList.forEach((segment) => {
+			const checkDuration = segment.duration + sum;
 			if (checkDuration < totalFrames) {
-				sum += c.duration;
+				sum += segment.duration;
 				content.numberOfSegments++;
 			} else {
 				return sum;
@@ -107,10 +109,10 @@ export const calculateSegmentTimeLine = (
 ): iSegmentList => {
 	if (content.segmentsList) {
 		let sum = 0;
-		content.segmentsList.forEach((c) => {
-			c.from = sum;
-			sum += c.duration;
-			c.to = sum;
+		content.segmentsList.forEach((segment) => {
+			segment.from = sum;
+			sum += segment.duration;
+			segment.to = sum;
 		});
 	}
 	return content;
