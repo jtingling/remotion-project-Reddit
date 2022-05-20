@@ -37,13 +37,10 @@ export const RemotionVideo: React.FC = () => {
 
 	const initVideoData = useCallback(async () => {
 		const clips: iSegmentList = {segmentsList: [], numberOfSegments: 0};
-		clips.segmentsList.push(await createSegmentFromTitle(post, data));
-		clips.segmentsList.push(
-			...(await createSegmentsFromSelfText(post, data))
-		);
-		clips.segmentsList.push(
-			...(await createSegmentsFromComments(postComments, users))
-		);
+		const output = [await createSegmentFromTitle(post, data)];
+		output.push(...(await createSegmentsFromSelfText(post, data)));
+		output.push(...(await createSegmentsFromComments(postComments, users)));
+		clips.segmentsList.push(...output);
 		const videoMetaData = await getVideoMetadata(video);
 		const videoFrames = Math.round(videoMetaData.durationInSeconds) * 30;
 		setVideoFrames(videoFrames);
